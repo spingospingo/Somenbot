@@ -1,6 +1,6 @@
 """
 todo:
-change all open('Games') to when statements, to avoid having to use games_list.close()
+change all open(gamefile) to when statements, to avoid having to use games_list.close()
 """
 
 from discord.ext import commands
@@ -10,6 +10,7 @@ import random
 desc = "Somenbot. Provides little to no utilities."
 token = 'MzUyOTY5MzQ1OTkyNzUzMTU0.DIo61w.5rVeEXN6lzGiZikMb7p1u177uiI'
 bot = commands.Bot(command_prefix='!', description=desc, pm_help=True)
+gamefile = 'Games'
 
 no_games_message = "There's no games on the list, you libcuck."
 
@@ -29,7 +30,7 @@ async def somen():
 @bot.command(pass_context=True, aliases=['clear'], help="Wipes past 100 bot messages.")
 async def clean(ctx):  # deletes past Somenbot messages
     await bot.say("Deleting past 100 bot messages.")
-    time.sleep(2)
+    time.sleep(2)  # might be worth changing to a separate thread
     async for message in bot.logs_from(ctx.message.channel):
         if message.author == bot.user:
             await bot.delete_message(message)
@@ -38,18 +39,18 @@ async def clean(ctx):  # deletes past Somenbot messages
 @bot.command(help="Returns a list of games.", no_pm=True)
 async def games():
     try:
-        games_list = open('Games')
+        games_list = open(gamefile)
         result = games_list.read()
         games_list.close()
         await bot.say(result)
-    except Exception:
+    except Exception:  # too broad, assign precice exception
         await bot.say(no_games_message)
 
 
 @bot.command(help="Adds an item to a list of games to choose from.\n"
                   "For names longer than one word, put quotes around entry.", no_pm=True)
 async def addgame(game):
-    games_list = open('Games', 'a')
+    games_list = open(gamefile, 'a') 
     output = game + "\n"
     games_list.write(output)
     games_list.close()
@@ -60,16 +61,17 @@ async def addgame(game):
 @bot.command(help="Removes an item from the game list.\n"
                   "For names longer than one word, put quotes around entry.", no_pm=True, parent='games')
 async def removegame(game):  # can only delete one game at a time as of now
-    games_list = open('Games', 'r+')
+    # copies all non-flagged listings to the top of the file, and deletes old entries
+    games_list = open(gamefile, 'r+')
     lines = games_list.readlines()
-    games_list.seek(0)
+    games_list.seek(0)  # direct pointer to beginning
     for item in lines:
-        if item != (game+"\n"):
+        if item != (game+"\n"):  # flag item to be rewritten
             games_list.write(item)
-        else:
+        else:  # items that don't get flagged get deleted...
             output = "Deleting " + game
             await bot.say(output)
-    games_list.truncate()
+    games_list.truncate()  # ...here!
     games_list.close()
 
 
@@ -78,17 +80,17 @@ async def removegame(game):  # can only delete one game at a time as of now
 async def choosegame():
     try:
         presult = random.random()
-        if presult > 0.10:
-            games_list = open('Games')
+        if presult > 0.10:  # 90% chance
+            games_list = open(gamefile)
             lines = games_list.readlines()
             result = random.choice(lines)
-            output = result.rstrip('\n')
+            output = result.rstrip('\n')  # temp file so that \n doesn't get stripped from actual entry
             await bot.say(output)
             games_list.close()
-        else:
+        else:  # 10% chance
             await bot.say("Uhhh... I don't know.")
     except IndexError:
         await bot.say(no_games_message)
 
 
-bot.run(token)
+bot.run(token)  # loops
