@@ -1,3 +1,4 @@
 # Somenbot
-Discord bot named after the legend himself. Written in python.
-Makes use of the [discord.py](https://github.com/Rapptz/discord.py) library for python.
+Nothing remarkable about Somenbot, it's more of a learning experience for myself.
+
+Makes use of the [discord.py](https://github.com/Rapptz/discord.py) library.
