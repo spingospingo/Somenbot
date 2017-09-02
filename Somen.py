@@ -8,7 +8,7 @@ import time
 import random
 
 desc = "Somenbot. Provides little to no utilities."
-token = 'MzUyOTY5MzQ1OTkyNzUzMTU0.DIo61w.5rVeEXN6lzGiZikMb7p1u177uiI'
+token = 'token'  # replace with actual token
 bot = commands.Bot(command_prefix='!', description=desc, pm_help=True)
 gamefile = 'Games'
 
