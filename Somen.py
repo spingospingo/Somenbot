@@ -4,11 +4,12 @@ change all open(gamefile) to when statements, to avoid having to use games_list.
 """
 
 from discord.ext import commands
+from discord import errors
 import time
 import random
 
 desc = "Somenbot. Provides little to no utilities."
-token = 'token'  # replace with actual token
+token = 'MzUyOTY5MzQ1OTkyNzUzMTU0.DIwBug.cHbenDbfKbKenJvhJm2ZC1dOIHI'  # replace with actual token
 bot = commands.Bot(command_prefix='!', description=desc, pm_help=True)
 gamefile = 'Games'
 
@@ -43,7 +44,7 @@ async def games():
         result = games_list.read()
         games_list.close()
         await bot.say(result)
-    except Exception:  # too broad, assign precice exception
+    except errors.HTTPException:
         await bot.say(no_games_message)
 
 
