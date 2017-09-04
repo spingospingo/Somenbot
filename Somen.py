@@ -4,6 +4,7 @@ randomly @ someone and ask "PUBG?"
 """
 
 from discord.ext import commands
+import discord
 import random
 import time
 
@@ -11,12 +12,15 @@ desc = "Somenbot. Provides little to no utilities."
 token = 'token'  # replace with actual token
 bot = commands.Bot(command_prefix='!', description=desc, pm_help=True)
 
+no_perm_msg = "Sorry, your body mass isn't large enough to use that command."
+
 
 @bot.event
 async def on_ready():
     print('Logged in as', bot.user.name)
     print('ID:', bot.user.id)
     print('--------------------')
+    await bot.change_presence(game=discord.Game(name='PUBG'))
 
 
 @bot.command(help="Ping/Pong")
@@ -46,6 +50,17 @@ async def choosegame(*args):
             await bot.say("Uhhh... I don't know.")
     except IndexError:
         await bot.say("List some games you libtard!")
+
+
+@bot.command(pass_context=True)  # changes game bot is playing. Only usable by
+async def setgame(ctx, game):
+    try:
+        if ctx.message.author.id == '124658897213587457':
+            await bot.change_presence(game=discord.Game(name=game))
+        else:
+            await bot.say(no_perm_msg)
+    except discord.ext.commands.errors.MissingRequiredArgument:
+        await bot.say("Set it to what? (!setgame <game>)")
 
 
 bot.run(token)  # loops
